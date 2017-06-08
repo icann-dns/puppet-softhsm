@@ -7,7 +7,7 @@ require 'progressbar'
 
 modules = [
   'puppetlabs-stdlib',
-  'icann-tea',
+  'icann-tea'
 ]
 git_repos = []
 # git_repos = [

@@ -5,8 +5,8 @@ require 'spec_helper_acceptance'
 describe 'opendnssec class' do
   context 'defaults' do
     it 'work with no errors' do
-      pp = <<EOS 
-      class {'::softhsm': 
+      pp = <<EOS
+      class {'::softhsm':
         tokens => {
           'test' => {
             'pin' => '1111',
