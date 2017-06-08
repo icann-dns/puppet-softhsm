@@ -70,8 +70,8 @@ describe 'softhsm' do
         end
         it do
           is_expected.to contain_exec('softhsm2-util init test_token').with(
-            'path' => ['/usr/bin'],
-            'command' => 'softhsm2-util --init-token --free --pin 1234 --so-pin 1234 --lable test_token'
+            'path' => ['/usr/bin', '/bin'],
+            'command' => 'softhsm2-util --init-token --free --pin 1234 --so-pin 1234 --label test_token'
           )
         end
       end
