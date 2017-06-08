@@ -24,10 +24,10 @@ class softhsm (
     content => $conf_file_content,
   }
 
-  $tokens.each_pair |String $token_name, Softhsm::Token $token| {
-    exec {"softhsm2-util init ${name}":
-      path    => ['/usr/bin'],
-      command => "softhsm2-util --init-token --free --pin ${token['pin']} --so-pin ${token['so_pin']} --lable ${token_name}",
+  $tokens.each |String $token_name, Softhsm::Token $token| {
+    exec {"softhsm2-util init ${token_name}":
+      path    => ['/usr/bin', '/bin'],
+      command => "softhsm2-util --init-token --free --pin ${token['pin']} --so-pin ${token['so_pin']} --label ${token_name}",
       unless  => "softhsm2-util --show-slots | egrep '^\s+Label:\s+${token_name}\s+$'",
     }
   }
