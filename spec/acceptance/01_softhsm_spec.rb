@@ -5,10 +5,10 @@ require 'spec_helper_acceptance'
 describe 'softhsm class' do
   case fact('lsbdistcodename')
   when 'trusty'
-    utils_cmd = 'softhsm' 
+    utils_cmd = 'softhsm'
     end_marker = %r{$}
   else
-    utils_cmd = 'softhsm2-util' 
+    utils_cmd = 'softhsm2-util'
     end_marker = %r{^Slot 1}
   end
   context 'defaults' do

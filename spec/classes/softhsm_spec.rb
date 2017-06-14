@@ -47,6 +47,7 @@ describe 'softhsm' do
       let(:facts) do
         facts
       end
+
       case facts[:lsbdistcodename]
       when 'trusty'
         let(:version)   { 1 }
@@ -85,10 +86,10 @@ describe 'softhsm' do
           it do
             is_expected.to contain_exec("#{utils_cmd} init test_token").with(
               'path' => ['/usr/bin', '/bin'],
-              "command" => "#{utils_cmd} --init-token --free --pin 1234 --so-pin 1234 --label test_token"
+              'command' => "#{utils_cmd} --init-token --free --pin 1234 --so-pin 1234 --label test_token"
             )
           end
-        else 
+        else
           it do
             is_expected.to contain_file(conf_file).with_ensure(
               'file'
@@ -97,7 +98,7 @@ describe 'softhsm' do
           it do
             is_expected.to contain_exec("#{utils_cmd} init test_token").with(
               'path' => ['/usr/bin', '/bin'],
-              "command" => "#{utils_cmd} --init-token --slot 0 --pin 1234 --so-pin 1234 --label test_token"
+              'command' => "#{utils_cmd} --init-token --slot 0 --pin 1234 --so-pin 1234 --label test_token"
             )
           end
         end
@@ -152,7 +153,8 @@ describe 'softhsm' do
           if facts[:lsbdistcodename] == 'xenial'
             it do
               is_expected.to contain_file(conf_file).with_ensure(
-                'file').with_content(
+                'file'
+              ).with_content(
                 %r{objectstore.backend = db}
               )
             end
