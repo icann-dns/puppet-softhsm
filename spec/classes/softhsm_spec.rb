@@ -35,6 +35,7 @@ describe 'softhsm' do
       let(:facts) do
         facts
       end
+
       case facts[:os]['name']
       when 'Ubuntu'
         case facts[:os]['release']['major']
