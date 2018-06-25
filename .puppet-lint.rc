@@ -3,7 +3,7 @@
 # refer to <http://puppet-lint.com/checks/>.
 
 # Examples (uncomment before use):
---no-version_comparison-check
+#--no-version_comparison-check
 # spacing, indentation and whitespace
 #--no-2sp_soft_tabs-check
 #--no-hard_tabs-check

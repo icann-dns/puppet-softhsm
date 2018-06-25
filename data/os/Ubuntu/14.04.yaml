@@ -1,0 +1,4 @@
+softhsm::version: 1
+softhsm::package: softhsm
+softhsm::utils_cmd: softhsm
+softhsm::conf_file: /etc/softhsm/softhsm.conf

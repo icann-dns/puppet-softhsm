@@ -3,51 +3,64 @@ sudo: false
 dist: trusty
 language: ruby
 cache: bundler
-bundler_args: --without development
 before_install:
   - bundle -v
-  - rm Gemfile.lock || true
+  - rm -f Gemfile.lock
   - gem update --system
-  - gem update bundler
   - gem --version
   - bundle -v
 script:
   - 'bundle exec rake $CHECK'
-matrix:
+bundler_args: --without system_tests
+rvm:
+  - 2.4.1
+env:
+  global:
+    - BEAKER_PUPPET_COLLECTION=puppet5 PUPPET_GEM_VERSION="~> 5.0"
+jobs:
   fast_finish: true
   include:
-  - rvm: 2.1.9
-    env: PUPPET_VERSION="~> 4.0" CHECK=test
-  - rvm: 2.2.6
-    env: PUPPET_VERSION="~> 4.0" CHECK=test
-  - rvm: 2.3.3
-    env: PUPPET_VERSION="~> 4.0" CHECK=test
-  - rvm: 2.4.0
-    env: PUPPET_VERSION="~> 4.0" CHECK=test
-  - rvm: 2.4.0
-    env: PUPPET_VERSION="~> 4.0" CHECK=rubocop
-  - rvm: 2.4.0
-    env: PUPPET_VERSION="~> 4.0" CHECK=build DEPLOY_TO_FORGE=yes
-  - rvm: 2.3.1
-    env: ["BEAKER_set=\"docker/ubuntu-16.04\"", "CHECK=beaker", "BEAKER_TESTMODE=apply"]
-    services: ["docker"]
-    sudo: required
-  - rvm: 2.3.1
-    env: ["BEAKER_set=\"docker/ubuntu-14.04\"", "CHECK=beaker", "BEAKER_TESTMODE=apply"]
-    services: ["docker"]
-    sudo: required
+    - stage: spec and lint
+      env: CHECK="syntax lint metadata_lint check:symlinks check:git_ignore check:dot_underscore check:test_file rubocop"
+    - stage: spec and lint
+      env: CHECK=parallel_spec
+    - stage: spec and lint
+      env: PUPPET_GEM_VERSION="~> 4.0" CHECK=parallel_spec
+      rvm: 2.1.9
+    - stage: acceptence
+      bundler_args: 
+      dist: trusty
+      env: PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_set=docker/ubuntu-16.04
+      rvm: 2.4.1
+      script: bundle exec rake beaker
+      services: docker
+      sudo: required
+    - stage: acceptence
+      bundler_args: 
+      dist: trusty
+      env: PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_set=docker/ubuntu-14.04
+      rvm: 2.4.1
+      script: bundle exec rake beaker
+      services: docker
+      sudo: required
+    - stage: acceptence
+      bundler_args: 
+      dist: trusty
+      env: PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_set=docker/centos-7
+      rvm: 2.4.1
+      script: bundle exec rake beaker
+      services: docker
+      sudo: required
+    - stage: deploy
+      env: PUPPET_VERSION="~> 4.0" CHECK=build DEPLOY_TO_FORGE=yes
 notifications:
   email: false
 deploy:
   provider: puppetforge
-  deploy:
-    branch: ha-bug-puppet-forge
   user: icann
   password:
     secure: "Npq3PSYJvAGcZeF8XYK8r1mQqJSF5HVNd2S/dqfomlGpDQSLNFEEbyWccaRTzRAvDWtbGk22QuN/MiWlpFIdXDAVc64szn7v1UeTwlQVRBfzp5QJhPbUKdQxf6Jqx4P3pqZ6FfZZDfKLVQmXQDGE+bn5cPZXkQr3RcyHzkAVWopYUdvPmbytyRnaiwVq3E3t5yVxA2GGsVPL7z3ZHLsF3S0b7BHyCwTir6lJiBNSb+WEEC1GXHpHr54gAY8D18o+Bvwq9E8ODEgNbYf42HEqpPU2sAd5vJ7A0vMTRLaIiGm2nAy8Zibtxk8AiR/kEPpSSKrp+LZl4ySsfJ4tH+aTkFaZVrxlYNfYBJ4jLhnoFo82gg8V3k2u+zlKqhvPFxPBcgADSq9gOEksu2+WoDx33hi4usZp5DUED9CDXGLovT/7E41z22CIpt6iRb0ppOTsM2YZcf5/NWmxsnMZg5XT3gO2iE4itL7DphQjmwnG12lwKfXn0SmALSNr3narszWewO3/4WO9CfHWvcGO2y5kptR7x5tudvygWBHjmmuc3AaBD1OktqkU/wCMiMrbCivsWjorYmx6jlgG/4fJIq0MXvUWDuYm+UO2r4VbZy69avFQ4AV8pHOb8vJ4rueeUfeZKyND/YiRfyWeyL0gM4tjrRhROsn8h4YA0PMC/2fAz+U="
   on:
     tags: true
-    # all_branches is required to use tags
     all_branches: true
-    # Only publish the build marked with "DEPLOY_TO_FORGE"
     condition: "$DEPLOY_TO_FORGE = yes"

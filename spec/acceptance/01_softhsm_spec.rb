@@ -29,17 +29,17 @@ EOS
     describe command("#{utils_cmd} --show-slots") do
       its(:stdout) do
         is_expected.to contain(
-          %r{[iI]nitialized:\s+yes}
+          %r{[iI]nitialized:\s+yes},
         ).from(%r{^Slot 0}).to(end_marker)
       end
       its(:stdout) do
         is_expected.to contain(
-          %r{User PIN init(ialized|\.):\s+yes}
+          %r{User PIN init(ialized|\.):\s+yes},
         ).from(%r{^Slot 0}).to(end_marker)
       end
       its(:stdout) do
         is_expected.to contain(
-          %r{[Ll]abel:\s+test}
+          %r{[Ll]abel:\s+test},
         ).from(%r{^Slot 0}).to(end_marker)
       end
     end
