@@ -3,20 +3,8 @@
 require 'spec_helper'
 
 describe 'softhsm' do
-  # by default the hiera integration uses hiera data from the shared_contexts.rb file
-  # but basically to mock hiera you first need to add a key/value pair
-  # to the specific context in the spec/shared_contexts.rb file
-  # Note: you can only use a single hiera context per describe/context block
-  # rspec-puppet does not allow you to swap out hiera data on a per test block
-  # include_context :hiera
   let(:node) { 'softhsm.example.com' }
-
-  # below is the facts hash that gives you the ability to mock
-  # facts on a per describe/context block.  If you use a fact in your
-  # manifest you should mock the facts below.
-  let(:facts) do
-    {}
-  end
+  let(:facts) { {} }
 
   # below is a list of the resource parameters that you can override.
   # By default all non-required parameters are commented out,
@@ -47,13 +35,25 @@ describe 'softhsm' do
       let(:facts) do
         facts
       end
-
-      case facts[:lsbdistcodename]
-      when 'trusty'
-        let(:version)   { 1 }
+      case facts[:os]['name']
+      when 'Ubuntu'
+        case facts[:os]['release']['major']
+        when '14.04'
+          let(:version)   { 1 }
+          let(:package)   { 'softhsm' }
+          let(:utils_cmd) { 'softhsm' }
+          let(:conf_file) { '/etc/softhsm/softhsm.conf' }
+        else
+          let(:version)   { 2 }
+          let(:package)   { 'softhsm2' }
+          let(:utils_cmd) { 'softhsm2-util' }
+          let(:conf_file) { '/etc/softhsm/softhsm2.conf' }
+        end
+      when 'RedHat'
+        let(:version)   { 2 }
         let(:package)   { 'softhsm' }
-        let(:utils_cmd) { 'softhsm' }
-        let(:conf_file) { '/etc/softhsm/softhsm.conf' }
+        let(:utils_cmd) { 'softhsm2-util' }
+        let(:conf_file) { '/etc/softhsm2.conf' }
       else
         let(:version)   { 2 }
         let(:package)   { 'softhsm2' }
@@ -71,7 +71,19 @@ describe 'softhsm' do
             '/var/lib/softhsm/tokens/'
           ).with_ensure('directory')
         end
-        if facts[:lsbdistcodename] == 'xenial'
+        if facts[:os]['name'] == 'Ubuntu' && facts[:os]['release']['major'] == '14.04'
+          it do
+            is_expected.to contain_file(conf_file).with_ensure(
+              'file'
+            ).with_content(%r{0:/var/lib/softhsm/tokens/test_token.db})
+          end
+          it do
+            is_expected.to contain_exec("#{utils_cmd} init test_token").with(
+              'path' => ['/usr/bin', '/bin'],
+              'command' => "#{utils_cmd} --init-token --slot 0 --pin 1234 --so-pin 1234 --label test_token"
+            )
+          end
+        else
           it do
             is_expected.to contain_file(conf_file).with_ensure(
               'file'
@@ -89,18 +101,6 @@ describe 'softhsm' do
               'command' => "#{utils_cmd} --init-token --free --pin 1234 --so-pin 1234 --label test_token"
             )
           end
-        else
-          it do
-            is_expected.to contain_file(conf_file).with_ensure(
-              'file'
-            ).with_content(%r{0:/var/lib/softhsm/tokens/test_token.db})
-          end
-          it do
-            is_expected.to contain_exec("#{utils_cmd} init test_token").with(
-              'path' => ['/usr/bin', '/bin'],
-              'command' => "#{utils_cmd} --init-token --slot 0 --pin 1234 --so-pin 1234 --label test_token"
-            )
-          end
         end
       end
       describe 'Change Defaults' do
@@ -112,18 +112,18 @@ describe 'softhsm' do
         context 'utils_cmd' do
           before { params.merge!(utils_cmd: 'foobar') }
           it { is_expected.to compile }
-          if facts[:lsbdistcodename] == 'xenial'
+          if facts[:os]['name'] == 'Ubuntu' && facts[:os]['release']['major'] == '14.04'
             it do
               is_expected.to contain_exec('foobar init test_token').with(
                 'path' => ['/usr/bin', '/bin'],
-                'command' => 'foobar --init-token --free --pin 1234 --so-pin 1234 --label test_token'
+                'command' => 'foobar --init-token --slot 0 --pin 1234 --so-pin 1234 --label test_token'
               )
             end
           else
             it do
               is_expected.to contain_exec('foobar init test_token').with(
                 'path' => ['/usr/bin', '/bin'],
-                'command' => 'foobar --init-token --slot 0 --pin 1234 --so-pin 1234 --label test_token'
+                'command' => 'foobar --init-token --free --pin 1234 --so-pin 1234 --label test_token'
               )
             end
           end

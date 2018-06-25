@@ -1,3 +1,6 @@
+### 2018-06-25 0.3.1
+* Fix spec testsfor RedHat and Centos
+
 ### 2018-06-25 0.3.0
 * Add support for RedHat thanks to [btoonk](https://github.com/btoonk)
 

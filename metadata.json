@@ -1,6 +1,6 @@
 {
   "name": "icann-softhsm",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "john.bond@icann.org",
   "summary": "puppet module to install and configure SoftHSM",
   "license": "Apache-2.0",
