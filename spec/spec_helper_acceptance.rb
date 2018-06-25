@@ -7,7 +7,7 @@ require 'progressbar'
 
 modules = [
   'puppetlabs-stdlib',
-  'icann-tea'
+  'icann-tea',
 ]
 git_repos = []
 # git_repos = [
@@ -35,10 +35,8 @@ hosts.each do |host|
   if host['platform'] =~ %r{freebsd}
     # default installs incorect version
     host.install_package('sysutils/puppet4')
-    host.install_package('dns/bind-tools')
   else
     host.install_package('vim')
-    host.install_package('dnsutils')
   end
   # remove search list and domain from resolve.conf
   on(host, 'echo $(grep nameserver /etc/resolv.conf) > /etc/resolv.conf')
@@ -67,8 +65,8 @@ else
     install_puppet_on(
       host,
       version: '4',
-      puppet_agent_version: '1.6.1',
-      default_action: 'gem_install'
+      puppet_agent_version: '1.9.0',
+      default_action: 'gem_install',
     )
     install_modules(host, modules, git_repos)
   end

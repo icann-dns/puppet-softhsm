@@ -1,18 +1,20 @@
 # Class: SoftHSM
 #
 class softhsm (
-  Integer[1,2]                 $version     = $::softhsm::params::version,
-  String                       $package     = $::softhsm::params::package,
-  String                       $utils_cmd   = $::softhsm::params::utils_cmd,
-  Stdlib::Absolutepath         $conf_file   = $::softhsm::params::conf_file,
-  Stdlib::Absolutepath         $tokendir    = '/var/lib/softhsm/tokens/',
-  Enum['file','db']            $objectstore = 'file',
-  Tea::Syslog_level            $log_level   = 'info',
-  Hash[String, Softhsm::Token] $tokens      = {},
-) inherits softhsm::params {
+  Integer[1,2]                 $version,
+  String                       $package,
+  String                       $utils_cmd,
+  Stdlib::Absolutepath         $conf_file,
+  Stdlib::Absolutepath         $tokendir,
+  Enum['file','db']            $objectstore,
+  Tea::Syslog_level            $log_level,
+  Hash[String, Softhsm::Token] $tokens,
+) {
   ensure_packages([$package])
 
+  # lint:ignore:version_comparison
   if $version == 1 {
+  # lint:endignore
     $conf_file_content = $tokens.reduce('') |$memo, $value| {
       if $memo == '' { $index = 0 }
       else { $index = $memo[0] + 1 }
@@ -35,7 +37,9 @@ class softhsm (
   }
   $tokens_array = any2array($tokens)
   $tokens_array.slice(2).each |$idx, $token| {
+  # lint:ignore:version_comparison
     if $version == 1 {
+  # lint:endignore
       $pattern = "^\s+Token\slabel:\s${token[0]}\s+$"
       $command = "${utils_cmd} --init-token --slot ${idx} --pin ${token[1]['pin']} --so-pin ${token[1]['so_pin']} --label ${token[0]}"
     } else {

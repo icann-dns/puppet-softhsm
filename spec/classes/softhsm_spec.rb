@@ -36,8 +36,8 @@ describe 'softhsm' do
         facts
       end
 
-      case facts[:os]['name']
-      when 'Ubuntu'
+      case facts[:os]['family']
+      when 'Debian'
         case facts[:os]['release']['major']
         when '14.04'
           let(:version)   { 1 }
@@ -65,7 +65,6 @@ describe 'softhsm' do
       describe 'check default config' do
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('softhsm') }
-        it { is_expected.to contain_class('softhsm::params') }
         it { is_expected.to contain_package(package) }
         it do
           is_expected.to contain_file(
