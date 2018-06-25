@@ -1,3 +1,8 @@
+### 2018-06-25 1.0.0
+* convert module to use hiera version 5 data provider
+* convert module to use pdk
+* updatemodule with spec and acceptence tests for RHEL/Centos
+
 ### 2018-06-25 0.3.1
 * Fix spec testsfor RedHat and Centos
 
