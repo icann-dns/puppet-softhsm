@@ -116,3 +116,7 @@ This module has been tested on:
 ## Development
 
 Pull requests welcome but please also update documentation and tests.
+
+## Contributors
+* [b4ldr](https://github.com/b4ldr/)
+* [btoonk](https://github.com/btoonk)

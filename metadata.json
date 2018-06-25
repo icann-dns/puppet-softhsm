@@ -1,6 +1,6 @@
 {
   "name": "icann-softhsm",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "john.bond@icann.org",
   "summary": "puppet module to install and configure SoftHSM",
   "license": "Apache-2.0",
@@ -15,7 +15,14 @@
     {
       "operatingsystem" : "Ubuntu",
       "operatingsystemrelease" : [ "14.04", "16.04" ]
+    },
+    {
+      "operatingsystem" : "RedHat",
+      "operatingsystemrelease" : [ "6", "7" ]
+    },
+    {
+      "operatingsystem" : "CentOS",
+      "operatingsystemrelease" : [ "6", "7" ]
     }
-  ],
-  "data_provider": null
+  ]
 }
