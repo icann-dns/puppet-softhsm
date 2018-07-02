@@ -1,3 +1,5 @@
+### 2018-07-02 1.1.0
+* add ability to specify custom owner and group permissions thanks to [sacr0](https://github.com/sacr0)
 ### 2018-06-25 1.0.0
 * convert module to use hiera version 5 data provider
 * convert module to use pdk
