@@ -4,6 +4,8 @@ class softhsm (
   Integer[1,2]                 $version,
   String                       $package,
   String                       $utils_cmd,
+  String                       $user,
+  String                       $group,
   Stdlib::Absolutepath         $conf_file,
   Stdlib::Absolutepath         $tokendir,
   Enum['file','db']            $objectstore,
@@ -29,7 +31,10 @@ class softhsm (
   }
 
   file {$tokendir:
-    ensure => directory,
+    ensure  => directory,
+    owner   => $user,
+    group   => $group,
+    recurse => true,
   }
   file {$conf_file:
     ensure  => file,

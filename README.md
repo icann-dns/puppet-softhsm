@@ -28,7 +28,7 @@ Install SoftHSM and manage security tokens
 
 * installs and manages softhsm2
 
-### Setup Requirements 
+### Setup Requirements
 
 * puppetlabs-stdlib 4.17.0
 * icann-tea 0.2.12
@@ -37,7 +37,7 @@ Install SoftHSM and manage security tokens
 
 install either package with no token
 
-```puppet 
+```puppet
 class { '::softhsm': }
 ```
 
@@ -86,7 +86,7 @@ softhsm::tokens:
 ### Public Classes
 
 #### Class: `softhsm`
-  
+
 ##### Parameters
 
 * `package` (String, Default: 'softhsm2'): The SoftHSM package to install
@@ -94,7 +94,10 @@ softhsm::tokens:
 * `tokendir` (Stdlib::Absolutepath, Default: '/var/lib/softhsm/tokens/'): the location of the tokens directory
 * `objectstore_backend` (Enum['file','db'], Default: 'file'): how to stor objects
 * `log_level` (Tea::Syslog_level, Default: 'info'): Syslog level to use
-* `tokens` (Hash[String, Softhsm::Token], Default: {}): tokens to configure 
+* `tokens` (Hash[String, Softhsm::Token], Default: {}): tokens to configure
+* `$user` (String, Default: 'root'): owner of the token directory and its sub-directories
+* `$group` (String, Default: 'root'): group owner of the token directory and its sub-directories
+
 
 ### Public Types
 
