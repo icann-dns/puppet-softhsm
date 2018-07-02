@@ -6,6 +6,5 @@ softhsm::tokendir: /var/lib/softhsm/tokens/
 softhsm::objectstore: file
 softhsm::log_level: info
 softhsm::tokens: {}
-
-
-
+softhsm::user: root
+softhsm::group: root

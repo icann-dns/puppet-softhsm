@@ -16,6 +16,8 @@ describe 'softhsm' do
       #:tokendir => "/var/lib/softhsm/tokens/",
       #:objectstore => "file",
       #:log_level => "info",
+      #:user => 'root',
+      #:group => 'root',
       tokens: {
         'test_token' => {
           'pin'    => '1234',
@@ -69,7 +71,10 @@ describe 'softhsm' do
         it do
           is_expected.to contain_file(
             '/var/lib/softhsm/tokens/'
-          ).with_ensure('directory')
+          ).with(
+            ensure: 'directory',
+            owner: 'root',
+          )
         end
         if facts[:os]['name'] == 'Ubuntu' && facts[:os]['release']['major'] == '14.04'
           it do
@@ -134,9 +139,15 @@ describe 'softhsm' do
           it { is_expected.to contain_file('/foobar.conf').with_ensure('file') }
         end
         context 'tokendir' do
-          before { params.merge!(tokendir: '/foobar') }
+          before { params.merge!(
+            tokendir: '/foobar',
+            user: 'foobar'
+          ) }
           it { is_expected.to compile }
-          it { is_expected.to contain_file('/foobar').with_ensure('directory') }
+          it { is_expected.to contain_file('/foobar').with(
+            ensure: 'directory',
+            owner: 'foobar',
+          ) }
           if facts[:lsbdistcodename] == 'xenial'
             it do
               is_expected.to contain_file(conf_file).with_ensure(
