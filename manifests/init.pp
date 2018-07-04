@@ -49,13 +49,13 @@ class softhsm (
       $command = "${utils_cmd} --init-token --slot ${idx} --pin ${token[1]['pin']} --so-pin ${token[1]['so_pin']} --label ${token[0]}"
     } else {
       $pattern = "^\s+Label:\s+${token[0]}\s+$"
-      $command = "${utils_cmd} --init-token --free --pin ${token[1]['pin']} --so-pin ${token[1]['so_pin']} --label ${token[0]}"
+      $command = "${utils_cmd} --init-token --free --pin ${token[1]['pin']} --so-pin ${token[1]['so_pin']} --label ${token[0]} && chown -R ${user}:${group} ${tokendir}"
     }
     exec {"${utils_cmd} init ${token[0]}":
       path    => ['/usr/bin', '/bin'],
       command => $command,
       unless  => "${utils_cmd} --show-slots | egrep '${pattern}'",
-      require => File[$conf_file],
+      require => File[$conf_file,$tokendir],
     }
   }
 }
