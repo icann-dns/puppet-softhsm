@@ -1,3 +1,4 @@
+---
 softhsm::package: softhsm
 softhsm::conf_file: /etc/softhsm2.conf
 softhsm::tokendir: /var/lib/softhsm/tokens/
