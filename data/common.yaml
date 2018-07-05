@@ -1,3 +1,4 @@
+---
 softhsm::version: 2
 softhsm::package: softhsm2
 softhsm::utils_cmd: softhsm2-util
