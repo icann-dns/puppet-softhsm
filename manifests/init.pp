@@ -31,9 +31,9 @@ class softhsm (
   }
 
   file {$tokendir:
-    ensure  => directory,
-    owner   => $user,
-    group   => $group,
+    ensure => directory,
+    owner  => $user,
+    group  => $group,
   }
   file {$conf_file:
     ensure  => file,
