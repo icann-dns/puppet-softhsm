@@ -1,3 +1,6 @@
+### 2018-07-05 1.1.1
+* FIX: Ensure token creation uses the correct user and group [sacr0](https://github.com/sacr0)
+
 ### 2018-07-02 1.1.0
 * add ability to specify custom owner and group permissions thanks to [sacr0](https://github.com/sacr0)
 ### 2018-06-25 1.0.0
