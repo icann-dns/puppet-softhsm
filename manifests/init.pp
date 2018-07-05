@@ -34,7 +34,6 @@ class softhsm (
     ensure  => directory,
     owner   => $user,
     group   => $group,
-    recurse => true,
   }
   file {$conf_file:
     ensure  => file,
@@ -49,11 +48,13 @@ class softhsm (
       $command = "${utils_cmd} --init-token --slot ${idx} --pin ${token[1]['pin']} --so-pin ${token[1]['so_pin']} --label ${token[0]}"
     } else {
       $pattern = "^\s+Label:\s+${token[0]}\s+$"
-      $command = "${utils_cmd} --init-token --free --pin ${token[1]['pin']} --so-pin ${token[1]['so_pin']} --label ${token[0]} && chown -R ${user}:${group} ${tokendir}"
+      $command = "${utils_cmd} --init-token --free --pin ${token[1]['pin']} --so-pin ${token[1]['so_pin']} --label ${token[0]}"
     }
     exec {"${utils_cmd} init ${token[0]}":
       path    => ['/usr/bin', '/bin'],
       command => $command,
+      user    => $user,
+      group   => $group,
       unless  => "${utils_cmd} --show-slots | egrep '${pattern}'",
       require => File[$conf_file,$tokendir],
     }
