@@ -31,10 +31,9 @@ class softhsm (
   }
 
   file {$tokendir:
-    ensure  => directory,
-    owner   => $user,
-    group   => $group,
-    recurse => true,
+    ensure => directory,
+    owner  => $user,
+    group  => $group,
   }
   file {$conf_file:
     ensure  => file,
@@ -54,8 +53,10 @@ class softhsm (
     exec {"${utils_cmd} init ${token[0]}":
       path    => ['/usr/bin', '/bin'],
       command => $command,
+      user    => $user,
+      group   => $group,
       unless  => "${utils_cmd} --show-slots | egrep '${pattern}'",
-      require => File[$conf_file],
+      require => File[$conf_file,$tokendir],
     }
   }
 }
